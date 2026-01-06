@@ -73,7 +73,7 @@ cd code_canvas
 ```
 
 ### 2. Install Dependencies
-
+open frontend and backend in two different terminals
 #### Backend
 ```sh
 cd backend
