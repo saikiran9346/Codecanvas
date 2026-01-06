@@ -1,0 +1,13 @@
+:root {
+  --primary-background: #282a36;
+  --secondary-background: #343746;
+  --primary-accent: #bd93f9;
+  --secondary-accent: #8be9fd;
+  --highlight: #ff79c6;
+  --text-primary: #f8f8f2;
+  --text-secondary: #8be9fd;
+  --success: #50fa7b;
+  --warning: #ffb86c;
+}
+
+/* The rest of the file should use these variables for backgrounds, text, borders, and accents. Replace all hardcoded colors with the above variables. */

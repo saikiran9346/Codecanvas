@@ -1,0 +1,357 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap');
+
+.profile-container {
+  background: #282a36;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 600px;
+  margin: 2rem auto;
+  border: 1px solid #44475a;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.profile-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.profile-picture-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.profile-pic {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #bd93f9;
+  box-shadow: 0 0 15px #bd93f9;
+}
+
+.info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.user-details-box,
+.codeforces-box,
+.skills-box {
+  background: transparent;
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: none;
+  border: 1px solid #44475a;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.user-details-box {
+  background: #e0f7fa;
+  border-left: 6px solid #38bdf8;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+}
+
+.user-details-box h2 {
+  font-size: 2.2rem;
+  margin-bottom: 0.75rem;
+  color: #bd93f9;
+  font-weight: 700;
+}
+
+.user-details-box p,
+.codeforces-box p {
+  font-size: 1.15rem;
+  color: #f8f8f2;
+  margin: 0.5rem 0;
+}
+
+.user-details-box p:first-of-type { /* Email */
+  color: #8be9fd;
+}
+
+.user-details-box p:last-of-type { /* Phone number */
+  color: #f8f8f2;
+}
+
+.codeforces-box {
+  background: #e3f2fd;
+  border-left: 6px solid #2563eb;
+}
+
+.codeforces-box h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #bd93f9;
+  font-weight: 600;
+}
+
+.skills-box {
+  background: #fffde7;
+  border-left: 6px solid #fbbf24;
+}
+
+.skills-box h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #bd93f9;
+  font-weight: 600;
+}
+
+.skills-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.skills-box li {
+  display: inline-block;
+  padding: 0.5rem 1.2rem;
+  background: #44475a;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.08);
+  color: #f8f8f2;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 1px solid #6272a4;
+}
+
+.edit-btn {
+  background: #bd93f9;
+  color: #282a36;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(56, 189, 248, 0.18);
+  transition: all 0.3s;
+  align-self: center;
+  margin-top: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.edit-btn:hover {
+  background: #ff79c6;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+  transform: translateY(-2px);
+}
+
+.edit-profile-container {
+  background: #fff;
+  padding: 3rem 2rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.08), 0 1.5px 8px rgba(0,0,0,0.04);
+  font-family: 'Poppins', sans-serif;
+  max-width: 700px;
+  margin: 2rem auto;
+}
+
+.edit-profile-container h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #2563eb;
+  text-align: center;
+  font-weight: 700;
+}
+
+.form-group {
+  margin-bottom: 2rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+  font-size: 1.1rem;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.3s;
+}
+
+.form-group input:focus {
+  border-color: #38bdf8;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+  outline: none;
+}
+
+.update-btn {
+  background: #38bdf8;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(56, 189, 248, 0.18);
+  transition: all 0.3s;
+  width: 100%;
+  margin-top: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.update-btn:hover {
+  background: #2563eb;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+  transform: translateY(-2px);
+}
+
+.edit-section {
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.04);
+}
+
+.password-section {
+  background: #e3f2fd;
+  border-left: 6px solid #2563eb;
+}
+
+.button-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.cancel-btn {
+  background: #fff;
+  color: #38bdf8;
+  border: 2px solid #38bdf8;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cancel-btn:hover {
+  background: #f1f5f9;
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+@media (max-width: 900px) {
+  .profile-container {
+    padding: 2rem 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-container {
+    width: 90%;
+    margin: 1rem auto;
+  }
+  .user-details-box, .codeforces-box, .skills-box, .edit-section {
+    padding: 1rem;
+  }
+}
+
+.profile-username {
+  color: #bd93f9;
+  font-size: 1.8rem;
+}
+
+.profile-email {
+  color: #8be9fd;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.codeforces-handle {
+  color: #f8f8f2 !important;
+  font-weight: bold;
+}
+
+.rating {
+  color: #ffb86c;
+  font-size: 1.2rem;
+}
+.rating.high {
+  color: #50fa7b;
+}
+
+.checkbox-label {
+  color: #f8f8f2 !important;
+  margin-left: 8px;
+}
+
+input[type="checkbox"] {
+  accent-color: #bd93f9;
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+}
+
+/* Dracula Profile Page - Optimized Contrast */
+.profile-header h1 {
+  color: #bd93f9;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Codeforces Section */
+.codeforces-section {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: rgba(68, 71, 90, 0.3);
+  border-radius: 8px;
+}
+
+/* Skills Section */
+.skills-section {
+  margin-top: 2rem;
+}
+
+.skills-title {
+  color: #bd93f9;
+  border-bottom: 1px solid #44475a;
+  padding-bottom: 0.5rem;
+}
+
+.skill-item {
+  color: #f8f8f2;
+  margin: 0.8rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.cf-rating-skeleton {
+  display: inline-block;
+  width: 60px;
+  height: 1.1em;
+  background: linear-gradient(90deg, #44475a 25%, #393a4b 50%, #bd93f9 75%);
+  border-radius: 6px;
+  margin-left: 8px;
+  animation: skeleton-pulse 1.5s infinite ease-in-out;
+  vertical-align: middle;
+}
+@keyframes skeleton-pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
