@@ -5,12 +5,12 @@ import { cpp } from '@codemirror/lang-cpp';
 import { python } from '@codemirror/lang-python';
 import { javascript } from '@codemirror/lang-javascript';
 import { java } from '@codemirror/lang-java';
-import { LANGUAGE_VERSIONS, CODE_SNIPPETS } from "./constants";
+import { JUDGE0_LANGUAGE_IDS, CODE_SNIPPETS } from "./constants";
 import LanguageSelector from "./LanguageSelector";
 import "./CodeEditor.css";
 
 // Default judge URL if environment variable is not set
-const DEFAULT_JUDGE_URL = "https://emkc.org/api/v2/piston/execute";
+const DEFAULT_JUDGE_URL = "https://ce.judge0.com/submissions?base64_encoded=false&wait=true";
 const APP_NAME = "CodeCanvas IDE";
 
 const languageExtensions = {
@@ -62,19 +62,33 @@ export default function CodeEditor({
     setIsRunning(true);
     setOutput("Running...");
     try {
-      const response = await fetch(import.meta.env.VITE_JUDGE, {
+      const judgeUrl = getJudgeUrl();
+      const response = await fetch(judgeUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          language,
-          version: LANGUAGE_VERSIONS[language],
-          files: [{ content: value.trim() }],
-          stdin: inputValue,
+          source_code: value,
+          language_id: JUDGE0_LANGUAGE_IDS[language],
+          stdin: inputValue || "",
         })
       });
+
       const data = await response.json();
-      const result = data.run?.output || "No output";
-      setOutput(result);
+
+      if (!response.ok) {
+        setOutput(`Error: ${data.message || data.error || `Request failed with status ${response.status}`}`);
+        return;
+      }
+
+      if (data.compile_output) {
+        setOutput(data.compile_output);
+      } else if (data.stderr) {
+        setOutput(data.stderr);
+      } else if (data.stdout) {
+        setOutput(data.stdout);
+      } else {
+        setOutput("No output");
+      }
     } catch (err) {
       setOutput(`Error: ${err.message}`);
     } finally {

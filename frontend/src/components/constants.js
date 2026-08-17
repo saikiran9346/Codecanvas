@@ -1,8 +1,15 @@
+export const JUDGE0_LANGUAGE_IDS = {
+  cpp: 105,
+  python: 100,
+  java: 91,
+  javascript: 93
+};
+
 export const LANGUAGE_VERSIONS = {
-  python: "3.10.0",
-  javascript: "18.15.0",
-  cpp: "10.2.0",
-  java: "15.0.2"
+  cpp: "GCC 14.1.0",
+  python: "3.12.5",
+  javascript: "Node.js 18.15.0",
+  java: "JDK 17.0.6"
 };
 
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";

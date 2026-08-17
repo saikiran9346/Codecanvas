@@ -50,7 +50,7 @@
 
 | Feature | Description |
 |---------|-------------|
-| 🖥️ **Code Editor** | Write & run code in **C++, Python, Java, JavaScript** with syntax highlighting (CodeMirror + Dracula theme) and instant output via Piston API |
+| 🖥️ **Code Editor** | Write & run code in **C++, Python, Java, JavaScript** with syntax highlighting (CodeMirror + Dracula theme) and instant output via Judge0 CE API |
 | 🧩 **LeetCode Problems** | Browse LeetCode problems, view details, read discussions, and submit your solutions — all within CodeCanvas |
 | 🏠 **Real-Time Rooms** | Create or join collaborative coding rooms with **live code sync** powered by Socket.IO |
 | 📅 **Contest Calendar** | Track upcoming contests from **Codeforces, LeetCode, and CodeChef** in one unified calendar |
@@ -91,7 +91,7 @@
 ### External APIs
 | API | Purpose |
 |-----|---------|
-| [**Piston API**](https://github.com/engineer-man/piston) | Secure remote code execution (C++, Python, Java, JS) |
+| [**Judge0 CE API**](https://ce.judge0.com) | Secure remote code execution (C++, Python, Java, JS) |
 | [**Alfa LeetCode API**](https://alfa-leetcode-api.onrender.com) | LeetCode problem data and user stats |
 | **Codeforces API** | Contest schedules from Codeforces |
 | **CodeChef API** | Contest schedules from CodeChef |
@@ -258,8 +258,8 @@ Create a file called `.env` inside the `frontend/` folder:
 #  CODECANVAS FRONTEND — Environment Variables
 # ═══════════════════════════════════════════════════════════════
 
-# Code execution API (Piston) — runs user-submitted code securely
-VITE_JUDGE=https://emkc.org/api/v2/piston/execute
+# Code execution API (Judge0 CE) — compiles & runs user code securely
+VITE_JUDGE=https://ce.judge0.com/submissions?base64_encoded=false&wait=true
 
 # LeetCode problems API — fetches problem data, stats, and details
 VITE_API_URL=https://alfa-leetcode-api.onrender.com
@@ -366,7 +366,7 @@ Navigate to **[http://localhost:5173](http://localhost:5173)** — register a ne
 3. Set the **Root Directory** to `frontend`
 4. Add environment variables in Vercel dashboard:
    ```
-   VITE_JUDGE=https://emkc.org/api/v2/piston/execute
+   VITE_JUDGE=https://ce.judge0.com/submissions?base64_encoded=false&wait=true
    VITE_API_URL=https://alfa-leetcode-api.onrender.com
    VITE_BACKEND_URL=https://your-backend-url.onrender.com
    ```
