@@ -28,7 +28,8 @@ router.post("/register/", async (request, response) => {
           username: username,
           user_id: dbResponse._id.toString(),
         };
-        const jwtoken = jwt.sign(payload, "MY_SECRET_TOKEN");
+        const secret = process.env.JWT_SECRET || "MY_SECRET_TOKEN";
+        const jwtoken = jwt.sign(payload, secret);
         return response.status(200).json({ token: jwtoken });
       }
     } else {
@@ -57,7 +58,8 @@ router.post("/login/", async (req, res) => {
       username: username,
       user_id: dbuser._id.toString(), // Corrected to use dbuser._id
     };
-    const jwtoken = jwt.sign(payload, "MY_SECRET_TOKEN");
+    const secret = process.env.JWT_SECRET || "MY_SECRET_TOKEN";
+    const jwtoken = jwt.sign(payload, secret);
     return res.json({ token: jwtoken }); // Return as JSON
   } else {
     return res.status(400).json({ error: "Invalid password" }); // Return JSON response

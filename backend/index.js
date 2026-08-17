@@ -28,10 +28,16 @@ const io = socketIo(server, {
   },
 });
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5174', // Keeping this in case you use it
-];
+// define allowed CORS origins; can provide comma-separated list in CLIENT_ORIGINS env var
+const allowedOrigins = (process.env.CLIENT_ORIGINS
+  ? process.env.CLIENT_ORIGINS.split(",")
+  : [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'https://codecanvas-eta.vercel.app'
+    ]
+).map(o => o.trim()).filter(Boolean);
+
 
 app.use(
   cors({

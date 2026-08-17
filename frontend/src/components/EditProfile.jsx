@@ -2,6 +2,10 @@
 
 import React, { useState } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "./constants";
+
+// set base URL for all axios requests
+axios.defaults.baseURL = BACKEND_URL;
 
 const EditProfile = ({ userData, onUpdate, showToast }) => {
   // Local state for editable fields (initialize with current user data)
@@ -60,7 +64,7 @@ const EditProfile = ({ userData, onUpdate, showToast }) => {
 
       // 1. Update Profile Details
       const profilePromise = axios.post(
-        "http://localhost:3000/user/profile/update",
+        `${BACKEND_URL}/user/profile/update`,
         formData,
         {
           headers: {
@@ -78,7 +82,7 @@ const EditProfile = ({ userData, onUpdate, showToast }) => {
           return; // Stop if passwords mismatch
         }
         passwordPromise = axios.post(
-          "http://localhost:3000/user/profile/update-password",
+          `${BACKEND_URL}/user/profile/update-password`,
           {
             currentPassword: passwords.currentPassword,
             newPassword: passwords.newPassword,

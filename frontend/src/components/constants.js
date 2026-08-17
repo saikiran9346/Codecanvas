@@ -5,6 +5,8 @@ export const LANGUAGE_VERSIONS = {
   java: "15.0.2"
 };
 
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
 export const CODE_SNIPPETS = {
   python: `print("Hello, Python!")`,
   javascript: `console.log("Hello, JavaScript!");`,

@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import '../styles/UserProfile.css';
 import EditProfile from '../components/EditProfile';
 import { useParams } from 'react-router-dom';
+import { BACKEND_URL } from '../components/constants';
 
 const FriendsProfile = () => {
   const [userData, setUserData] = useState({
@@ -24,7 +25,7 @@ const FriendsProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/user/${userId}`,
+        const res = await fetch(`${BACKEND_URL}/user/${userId}`,
           {
             method: 'GET',
             headers: {

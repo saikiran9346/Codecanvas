@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Calendar.css";
+import { BACKEND_URL } from "../components/constants";
 
 // Error Boundary Component
 class CalendarErrorBoundary extends React.Component {
@@ -140,8 +141,7 @@ const Calendar = () => {
 
   const fetchCodeforcesContests = useCallback(async () => {
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-      const response = await fetch(`${backendUrl}/api/contests/codeforces`);
+      const response = await fetch(`${BACKEND_URL}/api/contests/codeforces`);
       if (!response.ok) throw new Error("Codeforces API failed");
 
       const data = await response.json();
@@ -166,8 +166,7 @@ const Calendar = () => {
   const fetchLeetCodeContests = useCallback(async () => {
     try {
       // Use the backend proxy to avoid CORS issues
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-      const response = await fetch(`${backendUrl}/api/contests`);
+      const response = await fetch(`${BACKEND_URL}/api/contests`);
       
       if (!response.ok) {
         // Attempt to parse JSON error response if available
@@ -207,8 +206,7 @@ const Calendar = () => {
 
   const fetchCodeChefContests = useCallback(async () => {
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-      const response = await fetch(`${backendUrl}/api/contests/codechef`);
+      const response = await fetch(`${BACKEND_URL}/api/contests/codechef`);
       if (!response.ok) throw new Error("CodeChef API failed");
 
       const data = await response.json();

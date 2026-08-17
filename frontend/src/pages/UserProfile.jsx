@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/UserProfile.css';
 import EditProfile from '../components/EditProfile';
 import Toast from '../components/Toast';
+import { BACKEND_URL } from '../components/constants';
 
 const UserProfile = () => {
   const [userData, setUserData] = useState({
@@ -43,7 +44,7 @@ const UserProfile = () => {
     const fetchUserData = async () => {
       const jwtoken = localStorage.getItem('jwtoken');
       try {
-        const res = await fetch('http://localhost:3000/user/profile',
+        const res = await fetch(`${BACKEND_URL}/user/profile`,
           {
             method: 'GET',
             headers: {
@@ -90,7 +91,7 @@ const UserProfile = () => {
   const handleProfileUpdate = async (updatedData) => {
     try {
       const jwtoken = localStorage.getItem('jwtoken');
-      const res = await fetch('http://localhost:3000/user/profile/update', {
+      const res = await fetch(`${BACKEND_URL}/user/profile/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

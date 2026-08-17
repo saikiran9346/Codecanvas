@@ -2,6 +2,7 @@ import logo from "../assets/logo.CC.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../styles/Login.css";
+import { BACKEND_URL } from '../components/constants';
 
 function LoginScreen() {
   const [isHidden, setIsHidden] = useState(true);
@@ -18,7 +19,7 @@ function LoginScreen() {
     setIsHidden(true);
     setError("");
     try {
-      const res = await fetch(`http://localhost:3000/login/`, {
+      const res = await fetch(`${BACKEND_URL}/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

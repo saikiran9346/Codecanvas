@@ -80,6 +80,9 @@ Create a file named `.env` in the `backend` folder with the following content:
 MONGODB_URI=mongodb://localhost:27017/codecanvas
 PORT=3000
 JWT_SECRET=your_jwt_secret_key_here
+# Optional: comma-separated list of allowed client origins for CORS
+# e.g. CLIENT_ORIGINS=https://your-frontend.com,http://localhost:5173
+CLIENT_ORIGINS=http://localhost:5173
 ```
 
 - **MONGODB_URI**: Uses local MongoDB storage. Make sure MongoDB is running on your machine.
@@ -96,7 +99,7 @@ Create a file named `.env` in the `frontend` folder with the following content:
 ```
 VITE_JUDGE=https://emkc.org/api/v2/piston/execute
 VITE_API_URL=https://alfa-leetcode-api.onrender.com
-VITE_BACKEND_URL=http://localhost:3000
+VITE_BACKEND_URL=http://localhost:3000  # replace with your deployed backend URL when deploying
 
 ```
 

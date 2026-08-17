@@ -2,6 +2,7 @@ import logo from '../assets/logo.CC.png'
 import '../styles/Register.css'
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { BACKEND_URL } from '../components/constants';
 
 function RegisterScreen() {
   const [showPwd, setShowPwd] = useState(true);
@@ -16,7 +17,7 @@ function RegisterScreen() {
     form.reset();
     setShowPwd(true);
     try {
-      const res = await fetch('http://localhost:3000/register/', {
+      const res = await fetch(`${BACKEND_URL}/register/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

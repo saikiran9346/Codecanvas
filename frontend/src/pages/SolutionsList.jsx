@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { BACKEND_URL } from '../components/constants';
 import '../styles/SolutionsList.css';
 
 const SolutionsList = () => {
@@ -19,7 +20,7 @@ const SolutionsList = () => {
           return;
         }
 
-        const response = await axios.get(`http://localhost:3000/api/solutions/${titleSlug}`, {
+        const response = await axios.get(`${BACKEND_URL}/api/solutions/${titleSlug}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

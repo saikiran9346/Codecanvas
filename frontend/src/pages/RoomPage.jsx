@@ -3,6 +3,7 @@ import { useLocation, useParams } from "react-router-dom";
 import "../styles/rooms.css";
 import io from "socket.io-client";
 import CodeEditor from "../components/CodeEditor";
+import { BACKEND_URL } from "../components/constants";
 
 function RoomPage() {
   const location = useLocation();
@@ -27,7 +28,7 @@ function RoomPage() {
   });
 
   useEffect(() => {
-    socket.current = io("http://localhost:3000");
+    socket.current = io(BACKEND_URL);
 
     socket.current.emit("join-room", { roomId, username });
 
