@@ -13,6 +13,8 @@ const EditProfile = ({ userData, onUpdate, showToast }) => {
     confirmPassword: "",
   });
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
   // Cancel should reset edits to original data
   const handleCancel = () => {
     setFormData({ ...userData });
@@ -60,7 +62,7 @@ const EditProfile = ({ userData, onUpdate, showToast }) => {
 
       // 1. Update Profile Details
       const profilePromise = axios.post(
-        "http://localhost:3000/user/profile/update",
+        `${backendUrl}/user/profile/update`,
         formData,
         {
           headers: {
@@ -78,7 +80,7 @@ const EditProfile = ({ userData, onUpdate, showToast }) => {
           return; // Stop if passwords mismatch
         }
         passwordPromise = axios.post(
-          "http://localhost:3000/user/profile/update-password",
+          `${backendUrl}/user/profile/update-password`,
           {
             currentPassword: passwords.currentPassword,
             newPassword: passwords.newPassword,

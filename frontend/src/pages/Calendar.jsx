@@ -140,11 +140,13 @@ const Calendar = () => {
 
   const fetchCodeforcesContests = useCallback(async () => {
     try {
-      const response = await fetch("https://codeforces.com/api/contest.list");
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+      const response = await fetch(`${backendUrl}/api/contests/codeforces`);
       if (!response.ok) throw new Error("Codeforces API failed");
 
       const data = await response.json();
-      return data.status === "OK" ? data.result
+      return Array.isArray(data.contests)
+        ? data.contests
         .filter(contest => contest.phase === "BEFORE")
         .slice(0, 10)
         .map(contest => ({
@@ -153,7 +155,8 @@ const Calendar = () => {
           start_time: new Date(contest.startTimeSeconds * 1000).toISOString(),
           duration: contest.durationSeconds,
           url: `https://codeforces.com/contest/${contest.id}`,
-        })) : [];
+            }))
+        : [];
     } catch (error) {
       console.error("Codeforces API error:", error);
       return [];
@@ -204,20 +207,20 @@ const Calendar = () => {
 
   const fetchCodeChefContests = useCallback(async () => {
     try {
-      // Using a CORS proxy to avoid CORS issues
-      const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-      const targetUrl = "https://codechef-api.herokuapp.com/contests/future";
-      const response = await fetch(proxyUrl + targetUrl);
-
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+      const response = await fetch(`${backendUrl}/api/contests/codechef`);
       if (!response.ok) throw new Error("CodeChef API failed");
 
       const data = await response.json();
-      return Array.isArray(data) ? data.slice(0, 10).map(contest => ({
+      // The backend returns { contests: [...] }
+      return Array.isArray(data.contests) ? data.contests.slice(0, 10).map(contest => ({
         name: contest.name,
         site: "CodeChef",
-        start_time: contest.start,
+        start_time: contest.start_date_iso || contest.start_time || contest.start, // adjust as needed
         duration: contest.duration || 10800,
-        url: contest.url || "https://codechef.com",
+        url: contest.contest_code
+          ? `https://www.codechef.com/${contest.contest_code}`
+          : "https://codechef.com",
       })) : [];
     } catch (error) {
       console.error("CodeChef API error:", error);

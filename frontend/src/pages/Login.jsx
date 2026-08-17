@@ -7,6 +7,7 @@ function LoginScreen() {
   const [isHidden, setIsHidden] = useState(true);
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
   // Handle login form submission
   const handleLogin = async (e) => {
@@ -18,7 +19,7 @@ function LoginScreen() {
     setIsHidden(true);
     setError("");
     try {
-      const res = await fetch(`http://localhost:3000/login/`, {
+      const res = await fetch(`${backendUrl}/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
