@@ -1,8 +1,14 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
+
+  const mongoUri = process.env.MONGODB_URL || process.env.MONGODB_URI;
+  if (!mongoUri) {
+    console.error('MongoDB connection string is missing! Set MONGODB_URL or MONGODB_URI in your environment variables.');
+    process.exit(1);
+  }
   try {
-    await mongoose.connect(process.env.MONGODB_URL);
+    await mongoose.connect(mongoUri);
     console.log('MongoDB Connected...');
     
     // Optional: Log connection status
