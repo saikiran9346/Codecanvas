@@ -4,8 +4,6 @@
     { "source": "/user/:match*", "destination": "https://code-canvas.onrender.com/user/:match*" },
     { "source": "/discussions/:match*", "destination": "https://code-canvas.onrender.com/discussions/:match*" },
     { "source": "/solutions/:match*", "destination": "https://code-canvas.onrender.com/solutions/:match*" },
-    { "source": "/register", "destination": "/" },
-    { "source": "/login", "destination": "/" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
