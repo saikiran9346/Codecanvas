@@ -28,13 +28,32 @@ const io = socketIo(server, {
   },
 });
 
-// Add CORS for deployed Vercel frontend and local dev
+const allowedOrigins = [
+  'https://code-canvas-theta.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:5174'
+];
 app.use(cors({
-  origin: [
-    'https://code-canvas-olnstrale-vishnu-koushiks-projects.vercel.app',
-    'http://localhost:5173',
-    'http://localhost:5174'
-  ],
+  origin: function(origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+}));
+app.options('*', cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true,
 }));
 app.use((req, res, next) => {
