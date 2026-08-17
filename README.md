@@ -123,7 +123,7 @@ npm run dev
 
 ## 👤 Authors
 
-- **Kumara Vishnu Koushik** ([vishnukoushikkumara](https://github.com/vishnukoushikkumara))
+- **Pachigolla Saikiran** ([saikiran9346](https://github.com/saikiran9346))
 
 ---
 
