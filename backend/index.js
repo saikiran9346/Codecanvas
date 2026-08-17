@@ -1,4 +1,6 @@
 // server.js
+require("dotenv").config();
+
 const express = require("express");
 const http = require("http");
 const jwt = require("jsonwebtoken");
@@ -14,7 +16,6 @@ const socketHandler = require("./socketHandler");
 const User = require("./models/UserModel.js");
 const discussionsRoute = require("./routes/Discussions.js");
 const contestsRoute = require("./routes/Contests.js");
-require("dotenv").config();
 
 // Connect to MongoDB
 connectDB();
