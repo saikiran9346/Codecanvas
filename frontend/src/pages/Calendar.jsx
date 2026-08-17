@@ -41,43 +41,6 @@ class CalendarErrorBoundary extends React.Component {
   }
 }
 
-// Enhanced localStorage hook with better persistence
-const useStickyState = (defaultValue, key) => {
-  const [value, setValue] = useState(() => {
-    try {
-      if (typeof window === "undefined") return defaultValue;
-
-      const stickyValue = window.localStorage.getItem(key);
-      if (stickyValue !== null) {
-        const parsed = JSON.parse(stickyValue);
-
-        // Special handling for date objects
-        if (key === "calendar-current-date") {
-          const date = new Date(parsed);
-          return isNaN(date.getTime()) ? defaultValue : date;
-        }
-
-        return parsed;
-      }
-    } catch (error) {
-      console.error(`Error reading localStorage key "${key}":`, error);
-    }
-    return defaultValue;
-  });
-
-  useEffect(() => {
-    try {
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(key, JSON.stringify(value));
-      }
-    } catch (error) {
-      console.error(`Error saving to localStorage key "${key}":`, error);
-    }
-  }, [key, value]);
-
-  return [value, setValue];
-};
-
 // Loading Component
 const LoadingSpinner = () => (
   <div className="loading-container">
@@ -95,24 +58,30 @@ const ContestSkeleton = () => (
   </div>
 );
 
+// Helper for local day comparison
+const isSameDay = (date1, date2) => {
+  if (!date1 || !date2) return false;
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+  );
+};
+
 // Main Calendar Component
 const Calendar = () => {
   const navigate = useNavigate();
 
-  // State management with persistent storage
-  const [currentDate, setCurrentDate] = useStickyState(
-    new Date(),
-    "calendar-current-date"
-  );
-  const [contests, setContests] = useStickyState([], "calendar-contests");
+  // State management (fresh data on mount)
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [contests, setContests] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [selectedDateContests, setSelectedDateContests] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [initialized, setInitialized] = useState(false);
-  const [dataFetched, setDataFetched] = useStickyState(
-    false,
-    "calendar-data-fetched"
-  );
 
   useEffect(() => {
     const jwtoken = localStorage.getItem("jwtoken");
@@ -137,7 +106,7 @@ const Calendar = () => {
       setCurrentDate(new Date());
     }
     setInitialized(true);
-  }, [currentDate, setCurrentDate]);
+  }, [currentDate]);
 
   const fetchCodeforcesContests = useCallback(async () => {
     try {
@@ -145,18 +114,7 @@ const Calendar = () => {
       if (!response.ok) throw new Error("Codeforces API failed");
 
       const data = await response.json();
-      return Array.isArray(data.contests)
-        ? data.contests
-        .filter(contest => contest.phase === "BEFORE")
-        .slice(0, 10)
-        .map(contest => ({
-          name: contest.name,
-          site: "Codeforces",
-          start_time: new Date(contest.startTimeSeconds * 1000).toISOString(),
-          duration: contest.durationSeconds,
-          url: `https://codeforces.com/contest/${contest.id}`,
-            }))
-        : [];
+      return Array.isArray(data.contests) ? data.contests : [];
     } catch (error) {
       console.error("Codeforces API error:", error);
       return [];
@@ -165,42 +123,14 @@ const Calendar = () => {
 
   const fetchLeetCodeContests = useCallback(async () => {
     try {
-      // Use the backend proxy to avoid CORS issues
       const response = await fetch(`${BACKEND_URL}/api/contests`);
-      
-      if (!response.ok) {
-        // Attempt to parse JSON error response if available
-        const errorBody = await response.text();
-        let errorMsg = `HTTP error! status: ${response.status}`;
-        try {
-          const errorJson = JSON.parse(errorBody);
-          errorMsg = errorJson.message || errorMsg;
-        } catch (parseError) {
-          // If not JSON, use the raw text
-          errorMsg = `HTTP error! status: ${response.status}, response: ${errorBody.substring(0, 100)}...`;
-        }
-        throw new Error(errorMsg);
-      }
+      if (!response.ok) throw new Error("LeetCode API failed");
 
       const data = await response.json();
-      
-      // Validate the expected structure from the new backend endpoint
-      if (!data || !Array.isArray(data.contests)) {
-          console.error("Unexpected data structure from backend /api/contests:", data);
-          throw new Error("Unexpected data format for LeetCode contests");
-      }
-
-      return data.contests.map(contest => ({
-        name: contest.title,
-        site: "LeetCode",
-        start_time: new Date(contest.start_time * 1000).toISOString(),
-        duration: contest.duration,
-        url: `https://leetcode.com/contest/${contest.title_slug}`,
-      }));
+      return Array.isArray(data.contests) ? data.contests : [];
     } catch (error) {
-      console.error("LeetCode API (via backend) error:", error);
-      // Propagate a user-friendly error message
-      throw new Error(`Failed to fetch LeetCode contests: ${error.message}`);
+      console.error("LeetCode API error:", error);
+      return [];
     }
   }, []);
 
@@ -210,82 +140,18 @@ const Calendar = () => {
       if (!response.ok) throw new Error("CodeChef API failed");
 
       const data = await response.json();
-      // The backend returns { contests: [...] }
-      return Array.isArray(data.contests) ? data.contests.slice(0, 10).map(contest => ({
-        name: contest.name,
-        site: "CodeChef",
-        start_time: contest.start_date_iso || contest.start_time || contest.start, // adjust as needed
-        duration: contest.duration || 10800,
-        url: contest.contest_code
-          ? `https://www.codechef.com/${contest.contest_code}`
-          : "https://codechef.com",
-      })) : [];
+      return Array.isArray(data.contests) ? data.contests : [];
     } catch (error) {
       console.error("CodeChef API error:", error);
       return [];
     }
   }, []);
 
-  const generateSampleContests = useCallback(() => {
-    const now = new Date();
-    const sampleContests = [];
-    const platforms = [
-      "Codeforces", "LeetCode", "AtCoder", "CodeChef", "GeeksforGeeks"
-    ];
-
-    for (let monthOffset = 0; monthOffset < 6; monthOffset++) {
-      const currentMonth = new Date(
-        now.getFullYear(),
-        now.getMonth() + monthOffset,
-        1
-      );
-      const daysInMonth = new Date(
-        currentMonth.getFullYear(),
-        currentMonth.getMonth() + 1,
-        0
-      ).getDate();
-
-      const contestsThisMonth = Math.floor(Math.random() * 3) + 4;
-
-      for (let i = 0; i < contestsThisMonth; i++) {
-        const contestDate = new Date(currentMonth);
-        contestDate.setDate(Math.floor(Math.random() * daysInMonth) + 1);
-        contestDate.setHours(Math.floor(Math.random() * 12) + 10);
-        contestDate.setMinutes(Math.floor(Math.random() * 4) * 15);
-
-        if (contestDate >= now) {
-          const platform = platforms[Math.floor(Math.random() * platforms.length)];
-          const contestTypes = ["Round", "Contest", "Challenge", "Cup"];
-          const contestType = contestTypes[Math.floor(Math.random() * contestTypes.length)];
-
-          sampleContests.push({
-            name: `${platform} ${contestType} ${Math.floor(Math.random() * 1000)}`,
-            site: platform,
-            start_time: contestDate.toISOString(),
-            duration: [3600, 5400, 7200, 10800][Math.floor(Math.random() * 4)],
-            url: `https://${platform.toLowerCase().replace(" ", "")}.com`,
-          });
-        }
-      }
-    }
-
-    return sampleContests.sort(
-      (a, b) => new Date(a.start_time) - new Date(b.start_time)
-    );
-  }, []);
-
   const fetchContestsFromAllPlatforms = useCallback(async () => {
-    if (dataFetched && contests.length > 0) {
-      console.log("Using cached contest data");
-      return;
-    }
-
     setLoading(true);
     setError(null);
 
     try {
-      console.log("Fetching contests from all platforms...");
-
       const results = await Promise.allSettled([
         fetchCodeforcesContests(),
         fetchLeetCodeContests(),
@@ -293,42 +159,33 @@ const Calendar = () => {
       ]);
 
       const allContests = results
-        .filter(result => result.status === "fulfilled")
-        .flatMap(result => result.value)
-        .filter(contest => contest && contest.name);
+        .filter((result) => result.status === "fulfilled")
+        .flatMap((result) => result.value)
+        .filter((contest) => contest && contest.name && contest.start_time);
 
-      console.log(`Fetched ${allContests.length} contests from APIs`);
+      const now = Date.now();
+      const validContests = allContests
+        .filter((contest) => {
+          const startTime = new Date(contest.start_time).getTime();
+          const durationMs = (typeof contest.duration === "number" ? contest.duration : 7200) * 1000;
+          return !isNaN(startTime) && (startTime + durationMs) >= now;
+        })
+        .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
-      if (allContests.length === 0) {
-        console.log("No contests from APIs, using sample data");
-        const sampleContests = generateSampleContests();
-        setContests(sampleContests);
-      } else {
-        const sampleContests = generateSampleContests();
-        const combinedContests = [...allContests, ...sampleContests].sort(
-          (a, b) => new Date(a.start_time) - new Date(b.start_time)
-        );
-        setContests(combinedContests);
-      }
-
-      setDataFetched(true);
+      setContests(validContests);
     } catch (error) {
       console.error("Error fetching contests:", error);
-      setError("Failed to fetch contests. Using sample data.");
-
-      const sampleContests = generateSampleContests();
-      setContests(sampleContests);
-      setDataFetched(true);
+      setError("Failed to fetch contests.");
     } finally {
       setLoading(false);
     }
-  }, [dataFetched, contests.length, fetchCodeforcesContests, fetchLeetCodeContests, fetchCodeChefContests, generateSampleContests, setContests, setDataFetched]);
+  }, [fetchCodeforcesContests, fetchLeetCodeContests, fetchCodeChefContests]);
 
   useEffect(() => {
-    if (initialized && !dataFetched) {
+    if (initialized) {
       fetchContestsFromAllPlatforms();
     }
-  }, [initialized, dataFetched, fetchContestsFromAllPlatforms]);
+  }, [initialized, fetchContestsFromAllPlatforms]);
 
   const getDaysInMonth = useCallback((date) => {
     if (!date || !(date instanceof Date)) return 31;
@@ -344,25 +201,7 @@ const Calendar = () => {
   const hasContestOnDate = useCallback(
     (date) => {
       if (!contests || !Array.isArray(contests)) return false;
-
-      const targetDate = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
-      );
-      return contests.some((contest) => {
-        try {
-          const contestDate = new Date(contest.start_time);
-          const contestDateOnly = new Date(
-            contestDate.getFullYear(),
-            contestDate.getMonth(),
-            contestDate.getDate()
-          );
-          return targetDate.getTime() === contestDateOnly.getTime();
-        } catch (error) {
-          return false;
-        }
-      });
+      return contests.some((contest) => isSameDay(contest.start_time, date));
     },
     [contests]
   );
@@ -370,27 +209,9 @@ const Calendar = () => {
   const getContestsForDate = useCallback(
     (date) => {
       if (!contests || !Array.isArray(contests)) return [];
-
-      const targetDate = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
-      );
       return contests
-        .filter((contest) => {
-          try {
-            const contestDate = new Date(contest.start_time);
-            const contestDateOnly = new Date(
-              contestDate.getFullYear(),
-              contestDate.getMonth(),
-              contestDate.getDate()
-            );
-            return targetDate.getTime() === contestDateOnly.getTime();
-          } catch (error) {
-            return false;
-          }
-        })
-        .sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+        .filter((contest) => isSameDay(contest.start_time, date))
+        .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
     },
     [contests]
   );
@@ -410,6 +231,7 @@ const Calendar = () => {
           currentDate.getMonth(),
           day
         );
+        setSelectedDate(clickedDate);
         const contestsForDate = getContestsForDate(clickedDate);
         setSelectedDateContests(contestsForDate);
       } catch (error) {
@@ -438,23 +260,7 @@ const Calendar = () => {
         return new Date();
       }
     });
-    setSelectedDateContests([]);
-  }, []);
-
-  const navigateYear = useCallback((direction) => {
-    setCurrentDate((prevDate) => {
-      try {
-        const newDate = new Date(prevDate);
-        return new Date(
-          newDate.getFullYear() + direction,
-          newDate.getMonth(),
-          1
-        );
-      } catch (error) {
-        console.error("Error navigating year:", error);
-        return new Date();
-      }
-    });
+    setSelectedDate(null);
     setSelectedDateContests([]);
   }, []);
 
@@ -479,11 +285,12 @@ const Calendar = () => {
       );
       const hasContest = hasContestOnDate(date);
       const contestCount = getContestCountForDate(date);
+      const isSelected = selectedDate && isSameDay(selectedDate, date);
 
       days.push(
         <div
           key={day}
-          className={`calendar-day ${hasContest ? "has-contest" : ""}`}
+          className={`calendar-day ${hasContest ? "has-contest" : ""} ${isSelected ? "selected-day" : ""}`}
           onClick={() => handleDateClick(day)}
         >
           <span className="day-number">{day}</span>
@@ -502,6 +309,7 @@ const Calendar = () => {
     return days;
   }, [
     currentDate,
+    selectedDate,
     getDaysInMonth,
     getFirstDayOfMonth,
     hasContestOnDate,
@@ -526,6 +334,8 @@ const Calendar = () => {
       </div>
     );
   }
+
+  const activeContestsList = selectedDate ? selectedDateContests : contests.slice(0, 10);
 
   return (
     <div className="calendar-container">
@@ -559,26 +369,65 @@ const Calendar = () => {
 
         <aside className="contests-sidebar">
           <section className="contests-section">
-            <h3>Upcoming Contests</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <h3 style={{ margin: 0 }}>
+                {selectedDate
+                  ? `Contests for ${selectedDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`
+                  : "Upcoming Contests"}
+              </h3>
+              {selectedDate && (
+                <button
+                  onClick={() => {
+                    setSelectedDate(null);
+                    setSelectedDateContests([]);
+                  }}
+                  className="clear-filter-btn"
+                  style={{
+                    background: 'transparent',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    color: '#a0a0a0',
+                    borderRadius: '4px',
+                    padding: '3px 8px',
+                    fontSize: '0.75rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Show All
+                </button>
+              )}
+            </div>
             <div className="contests-list">
               {loading ? (
                 Array.from({ length: 5 }).map((_, idx) => <ContestSkeleton key={idx} />)
               ) : error ? (
                 <div className="error-message">{error}</div>
-              ) : selectedDateContests.length === 0 ? (
-                <div className="no-contests">No contests for this date.</div>
+              ) : activeContestsList.length === 0 ? (
+                <div className="no-contests">
+                  {selectedDate ? "No contests scheduled for this date." : "No upcoming contests found."}
+                </div>
               ) : (
-                selectedDateContests.map((contest, idx) => (
+                activeContestsList.map((contest, idx) => (
                   <div key={idx} className="contest-item">
                     <h4>
-                      <span className={`platform-badge platform-${contest.site?.toLowerCase() || 'other'}`}>{contest.site}</span>
+                      <span className={`platform-badge platform-${contest.site?.toLowerCase() || 'other'}`}>
+                        {contest.site}
+                      </span>
                       {contest.name}
                     </h4>
                     <p>
-                      <span className="label">Start:</span> {new Date(contest.start_time).toLocaleString()}
+                      <span className="label">Start:</span>{" "}
+                      {new Date(contest.start_time).toLocaleString(undefined, {
+                        weekday: 'short',
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
                     </p>
                     <p>
-                      <span className="label">Duration:</span> {typeof contest.duration === "number"
+                      <span className="label">Duration:</span>{" "}
+                      {typeof contest.duration === "number"
                         ? `${Math.floor(contest.duration / 3600)}h ${Math.floor((contest.duration % 3600) / 60)}m`
                         : contest.duration}
                     </p>
