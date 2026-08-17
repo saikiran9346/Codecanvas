@@ -1,9 +1,8 @@
 {
   "rewrites": [
-    { "source": "/api/:match*", "destination": "https://code-canvas.onrender.com/api/:match*" },
-    { "source": "/user/:match*", "destination": "https://code-canvas.onrender.com/user/:match*" },
-    { "source": "/discussions/:match*", "destination": "https://code-canvas.onrender.com/discussions/:match*" },
-    { "source": "/solutions/:match*", "destination": "https://code-canvas.onrender.com/solutions/:match*" },
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
