@@ -18,6 +18,18 @@ A collaborative coding platform and social hub for programmers. CodeCanvas lets 
 
 ---
 
+## 📸 Screenshots
+
+Screenshots of the application are available in the `screenshots/` folder of this repository. These images showcase the user interface and key features of CodeCanvas, including the code editor, discussions, contests, and more.
+
+To view the screenshots, open the `screenshots/` folder in your file explorer or on GitHub. Example:
+
+```
+![Home Page](screenshots/home.png)
+```
+
+---
+
 ## 🛠️ Tech Stack
 
 - **Frontend**: React, Vite, CodeMirror, CSS
