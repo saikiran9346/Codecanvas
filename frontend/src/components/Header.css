@@ -1,0 +1,226 @@
+:root {
+  --primary-background: #282a36;
+  --secondary-background: #343746;
+  --primary-accent: #bd93f9;
+  --secondary-accent: #8be9fd;
+  --highlight: #ff79c6;
+  --text-primary: #f8f8f2;
+  --text-secondary: #8be9fd;
+  --success: #50fa7b;
+  --warning: #ffb86c;
+  --error: #ff4c4c;
+}
+
+/* Navbar Container */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    background: #282a36;
+    border-bottom: 1px solid #44475a;
+    backdrop-filter: blur(8px);
+    padding: 0;
+}
+
+/* Navbar Content Layout */
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.2rem 1.5rem;
+    width: 100%;
+    position: relative;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Logo */
+.nav-logo {
+    height: 70px;
+    width: auto;
+    display: block;
+}
+
+/* Hamburger */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 38px;
+    height: 38px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1200;
+    margin-left: auto;
+    transition: background 0.2s;
+}
+
+.hamburger span {
+    display: block;
+    width: 28px;
+    height: 3px;
+    margin: 5px 0;
+    background: var(--primary-accent);
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Nav Links */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    transition: none;
+}
+
+.nav-links li {
+    animation: none;
+}
+
+.nav-links a,
+.logout-btn a {
+    text-decoration: none;
+    color: #6272a4;
+    padding: 10px 15px;
+    transition: color 0.3s, text-shadow 0.3s;
+    position: relative;
+    background: transparent;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.nav-links a::after,
+.logout-btn a::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+    transition: width 0.3s;
+}
+
+.nav-links a:hover,
+.logout-btn a:hover {
+    color: #8be9fd;
+    text-shadow: 0 0 10px #8be9fd;
+    background: transparent;
+}
+
+.nav-links .active {
+    color: #bd93f9;
+    font-weight: 700;
+    background: transparent;
+}
+
+.nav-links .active::after {
+    background: #bd93f9;
+    height: 3px;
+    bottom: 5px;
+}
+
+.logout-btn a {
+    color: #ff79c6;
+}
+
+/* Checkbox Styling (if any in navbar) */
+input[type="checkbox"] {
+  accent-color: #bd93f9;
+  border: 1px solid #6272a4;
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+    nav {
+        padding: 1.2rem 1rem;
+    }
+
+    .nav-links {
+        gap: 1.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    nav {
+        padding: 1rem 0.6rem;
+    }
+
+    .nav-logo {
+        height: 32px;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 0.3rem;
+        background: var(--secondary-background);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        width: 100vw;
+        min-width: 0;
+        padding: 0.8rem 0 1rem 0;
+        margin: 0;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.13);
+        display: none;
+        animation: navItemFade 0.3s ease;
+        z-index: 1100;
+    }
+
+    .nav-links.show {
+        display: flex;
+    }
+
+    .nav-links li {
+        width: 100%;
+        animation: navItemFade 0.4s ease forwards;
+        animation-delay: calc(var(--i, 0) * 0.07s);
+    }
+
+    .nav-links a {
+        width: 100%;
+        text-align: left;
+        padding: 0.85rem 1.2rem;
+        font-size: 1.05rem;
+        border-radius: 4px;
+    }
+}
+
+/* Smooth nav item fade-in */
+@keyframes navItemFade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
