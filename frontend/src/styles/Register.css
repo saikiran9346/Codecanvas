@@ -23,37 +23,31 @@
 }
 
 .register-container {
-  background: white;
-  padding: 3rem;
-  border-radius: 16px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  width: 100%;
-  max-width: 450px;
-  text-align: center;
-  position: relative;
-  z-index: 1;
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--primary-accent);
-  transform-style: preserve-3d;
-  perspective: 1200px;
-  transition: transform 0.5s ease;
-  margin: 1rem;
-}
-
-.register-container:hover {
-  transform: translateZ(20px);
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
 }
 
 #register-form {
   text-align: left;
+  margin-bottom: 1.2rem;
+}
+
+.form-group {
+  margin-bottom: 0.8rem;
 }
 
 .register-button {
+  margin-top: 0.8rem;
+  padding: 12px;
+  font-size: 1rem;
   width: 100%;
-  padding: 16px;
   background: linear-gradient(135deg, var(--primary-accent) 0%, var(--secondary-accent) 100%);
   color: var(--text-primary);
-  font-size: 1.1rem;
   font-weight: 700;
   border: none;
   border-radius: 10px;
@@ -70,18 +64,22 @@
   background: linear-gradient(135deg, #00e1ff 0%, #8a2be2 100%);
 }
 
+.form-label, .register-footer, .checkbox-label {
+  color: #f8f8f2 !important;
+}
+
 .register-footer {
-  color: black;
+  color: #f8f8f2 !important;
+  text-shadow: none !important;
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 1.2rem;
   position: relative;
-  font-size: 1.5rem;
+  font-size: 1rem;
   z-index: 1;
-  text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
 }
 
 .register-footer a {
-  color: #00ff77;
+  color: #8be9fd !important;
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
@@ -155,4 +153,20 @@
   .register-footer {
     font-size: 0.9rem;
   }
+}
+
+.register-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+.register-logo-img {
+  max-width: 140px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
 }

@@ -20,7 +20,7 @@ router.post("/register/", async (request, response) => {
         const newUser = new User({
           Username: username,
           HashedPassword: hashedPassword,
-          Email: email,
+          email: email,
         });
         const dbResponse = await User.create(newUser);
         // Create JWT token

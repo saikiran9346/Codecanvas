@@ -183,8 +183,8 @@
 
 .calendar-day.empty {
     cursor: default;
-    background: #f1f5f9;
-    color: #cbd5e1;
+    background: #282a36 !important;
+    color: #44475a !important;
 }
 
 .calendar-day.empty:hover {

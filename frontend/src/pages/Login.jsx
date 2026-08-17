@@ -2,7 +2,6 @@ import logo from "../assets/logo.CC.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../styles/Login.css";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function LoginScreen() {
   const [isHidden, setIsHidden] = useState(true);
@@ -70,15 +69,18 @@ function LoginScreen() {
             <label htmlFor="password" className="floating-label">
               PASSWORD
             </label>
-            <button
-              type="button"
-              className="show-password"
-              onClick={() => setIsHidden((h) => !h)}
-              tabIndex={-1}
-              aria-label={isHidden ? "Show password" : "Hide password"}
-            >
-              {isHidden ? <FaEye /> : <FaEyeSlash />}
-            </button>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '-1.2rem' }}>
+            <input
+              type="checkbox"
+              id="showpassword"
+              checked={!isHidden}
+              onChange={() => setIsHidden((h) => !h)}
+              style={{ marginRight: '0.5em' }}
+            />
+            <label htmlFor="showpassword" style={{ color: '#f8f8f2', fontSize: '0.95rem', cursor: 'pointer' }}>
+              Show Password
+            </label>
           </div>
           {error && <div id="login-error-msg">{error}</div>}
           <button type="Submit" className="login-button">

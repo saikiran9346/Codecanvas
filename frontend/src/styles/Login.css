@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
 :root {
   --primary-background: #282a36;
   --secondary-background: #343746;
@@ -9,8 +10,6 @@
   --success: #50fa7b;
   --warning: #ffb86c;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
 
 * {
   box-sizing: border-box;
@@ -99,15 +98,25 @@ body, .App {
 
 .show-password {
   position: absolute;
-  right: 1.2rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: var(--secondary-accent);
+  right: 0.7rem;
+  top: 0;
+  bottom: 0;
+  background: transparent !important;
+  border: none !important;
+  color: #111;
   font-size: 1.3rem;
   cursor: pointer;
   z-index: 2;
+  height: auto;
+  padding: 0;
+  box-shadow: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.show-password:hover, .show-password:focus {
+  background: transparent !important;
 }
 
 .login-button {

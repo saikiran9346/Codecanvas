@@ -32,15 +32,14 @@ router.post("/profile/update", auth, async (req, res) => {
     } = req.body;
 
     // Update fields
-    dbUser.name = name || dbUser.name;
-    dbUser.email = email || dbUser.email;
-    dbUser.phoneNumber = phoneNumber || dbUser.phoneNumber;
-    dbUser.profilePicture = profilePicture || dbUser.profilePicture;
-    dbUser.codeforcesHandle = codeforcesHandle || dbUser.codeforcesHandle;
-    dbUser.codeforcesRating = codeforcesRating || dbUser.codeforcesRating;
-    dbUser.programmingLanguages =
-      programmingLanguages || dbUser.programmingLanguages;
-    dbUser.skills = skills || dbUser.skills;
+    if (typeof name !== 'undefined') dbUser.name = name;
+    if (typeof email !== 'undefined') dbUser.email = email;
+    if (typeof phoneNumber !== 'undefined') dbUser.phoneNumber = phoneNumber;
+    if (typeof profilePicture !== 'undefined') dbUser.profilePicture = profilePicture;
+    if (typeof codeforcesHandle !== 'undefined') dbUser.codeforcesHandle = codeforcesHandle;
+    if (typeof codeforcesRating !== 'undefined') dbUser.codeforcesRating = codeforcesRating;
+    if (typeof programmingLanguages !== 'undefined') dbUser.programmingLanguages = programmingLanguages;
+    if (typeof skills !== 'undefined') dbUser.skills = skills;
 
     await dbUser.save();
     res

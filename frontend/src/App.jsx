@@ -1,10 +1,10 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import RoomSelection from "./pages/RoomSelection";
 import RoomPage from "./pages/RoomPage";
 import Calendar from "./pages/Calendar";
-import LoginPage from "./pages/Login";
+import LoginScreen from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProblemDetail from "./pages/ProblemDetail";
@@ -17,13 +17,32 @@ import FriendsProfile from "./pages/FriendsProfile";
 import CodeEditorPage from "./pages/CodeEditorPage";
 import RequireAuth from "./components/RequireAuth";
 
+// AuthRoute: Only allows unauthenticated users to access (for /login and /register)
+function AuthRoute({ children }) {
+  const token = localStorage.getItem("jwtoken");
+  const location = useLocation();
+  if (token) {
+    // If already logged in, redirect to home
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
+  return children;
+}
+
 function App() {
   return (
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={
+          <AuthRoute>
+            <LoginScreen />
+          </AuthRoute>
+        } />
+        <Route path="/register" element={
+          <AuthRoute>
+            <RegisterPage />
+          </AuthRoute>
+        } />
         <Route
           path="/"
           element={

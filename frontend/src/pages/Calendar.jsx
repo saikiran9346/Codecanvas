@@ -532,12 +532,6 @@ const Calendar = () => {
         <div className="calendar-section">
           <div className="calendar-header">
             <div className="navigation">
-              <button
-                className="nav-button year-nav"
-                onClick={() => navigateYear(-1)}
-              >
-                ‹‹
-              </button>
               <button className="nav-button" onClick={() => navigateMonth(-1)}>
                 ‹
               </button>
@@ -546,12 +540,6 @@ const Calendar = () => {
               </h2>
               <button className="nav-button" onClick={() => navigateMonth(1)}>
                 ›
-              </button>
-              <button
-                className="nav-button year-nav"
-                onClick={() => navigateYear(1)}
-              >
-                ››
               </button>
             </div>
           </div>

@@ -3,6 +3,8 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 }
 
 :root {
@@ -31,39 +33,28 @@ body {
 }
 
 .App {
-  background: var(--glass-bg);
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
+  background: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   padding: 2rem;
-  margin: 2rem auto;
-  max-width: 1200px;
-  min-height: 80vh;
-  height: 100vh;
+  margin: 0 auto;
+  max-width: 100vw;
+  min-height: 0;
+  height: auto;
   width: 100vw;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   position: relative;
-  overflow: auto;
-}
-
-/* Custom Scrollbar for .App */
-.App::-webkit-scrollbar {
-  background-color: var(--secondary-color);
-  height: 8px;
-  width: 8px;
-}
-
-.App::-webkit-scrollbar-thumb {
-  background-color: var(--accent-color);
-  border-radius: 8px;
+  overflow: visible;
 }
 
 /* Custom Scrollbar */
 *::-webkit-scrollbar {
   width: 8px;
   background: var(--secondary-color);
+  display: none; /* Chrome, Safari, Opera */
 }
 *::-webkit-scrollbar-thumb {
   background: var(--accent-color);

@@ -20,22 +20,9 @@
   --shadow-subtle: rgba(0, 0, 0, 0.05);
 }
 
-*::-webkit-scrollbar {
-  width: 6px;
-  background: var(--light-bg-primary);
-}
-
-*::-webkit-scrollbar-thumb {
-  background: var(--accent-blue-primary);
-  border-radius: 8px;
-}
-
 /* Base Styles */
 .room-page, .room-container {
-  height: 90vh;
-  width: 100vw;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow: hidden !important;
   background: var(--primary-background);
   color: var(--text-primary);
   font-family: 'Inter', sans-serif;
