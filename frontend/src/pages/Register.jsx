@@ -8,8 +8,6 @@ function RegisterScreen() {
   const navigate = useNavigate();
   const togglePwd = () => setShowPwd((v) => !v);
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-
   const handleRegister = async (e) => {
     e.preventDefault();
     const form = document.getElementById('register-form');
@@ -18,7 +16,7 @@ function RegisterScreen() {
     form.reset();
     setShowPwd(true);
     try {
-      const res = await fetch(`${backendUrl}/register/`, {
+      const res = await fetch('http://localhost:3000/register/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

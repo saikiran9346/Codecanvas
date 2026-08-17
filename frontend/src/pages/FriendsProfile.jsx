@@ -19,13 +19,12 @@ const FriendsProfile = () => {
   const queryParams = new URLSearchParams(window.location.search);
   const {id} = useParams();
   const userId = id;
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
   // Fetch user data (replace with your actual API call)
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await fetch(`${backendUrl}/user/${userId}`,
+        const res = await fetch(`http://localhost:3000/user/${userId}`,
           {
             method: 'GET',
             headers: {

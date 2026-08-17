@@ -18,8 +18,6 @@ function RoomPage() {
   const messagesEndRef = useRef(null);
   const socket = useRef();
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-
   useEffect(() => {
     // Redirect to the login page if the user is not authenticated
     const jwtoken = localStorage.getItem("jwtoken");
@@ -29,7 +27,7 @@ function RoomPage() {
   });
 
   useEffect(() => {
-    socket.current = io(backendUrl);
+    socket.current = io("http://localhost:3000");
 
     socket.current.emit("join-room", { roomId, username });
 

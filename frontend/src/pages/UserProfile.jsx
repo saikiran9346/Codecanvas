@@ -21,8 +21,6 @@ const UserProfile = () => {
   const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-
   const showToastMessage = (message) => {
     setToastMessage(message);
     setShowToast(true);
@@ -45,7 +43,7 @@ const UserProfile = () => {
     const fetchUserData = async () => {
       const jwtoken = localStorage.getItem('jwtoken');
       try {
-        const res = await fetch(`${backendUrl}/user/profile`,
+        const res = await fetch('http://localhost:3000/user/profile',
           {
             method: 'GET',
             headers: {
@@ -92,7 +90,7 @@ const UserProfile = () => {
   const handleProfileUpdate = async (updatedData) => {
     try {
       const jwtoken = localStorage.getItem('jwtoken');
-      const res = await fetch(`${backendUrl}/user/profile/update`, {
+      const res = await fetch('http://localhost:3000/user/profile/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

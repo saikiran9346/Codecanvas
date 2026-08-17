@@ -10,8 +10,6 @@ const SolutionsList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-
   useEffect(() => {
     const fetchSolutions = async () => {
       try {
@@ -21,7 +19,7 @@ const SolutionsList = () => {
           return;
         }
 
-        const response = await axios.get(`${backendUrl}/api/solutions/${titleSlug}`, {
+        const response = await axios.get(`http://localhost:3000/api/solutions/${titleSlug}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
