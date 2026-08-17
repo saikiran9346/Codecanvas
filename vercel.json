@@ -1,13 +1,11 @@
 {
   "rewrites": [
-    { "source": "/register", "destination": "https://code-canvas.onrender.com/register" },
-    { "source": "/register/", "destination": "https://code-canvas.onrender.com/register/" },
-    { "source": "/login", "destination": "https://code-canvas.onrender.com/login" },
-    { "source": "/login/", "destination": "https://code-canvas.onrender.com/login/" },
-    { "source": "/user/:match*", "destination": "https://code-canvas.onrender.com/user/:match*" },
     { "source": "/api/:match*", "destination": "https://code-canvas.onrender.com/api/:match*" },
+    { "source": "/user/:match*", "destination": "https://code-canvas.onrender.com/user/:match*" },
     { "source": "/discussions/:match*", "destination": "https://code-canvas.onrender.com/discussions/:match*" },
     { "source": "/solutions/:match*", "destination": "https://code-canvas.onrender.com/solutions/:match*" },
+    { "source": "/register", "destination": "/" },
+    { "source": "/login", "destination": "/" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
