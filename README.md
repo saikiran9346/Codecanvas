@@ -108,7 +108,7 @@ npm run dev
 
 ## 👤 Authors
 
-- **Vishnu Koushik** ([vishnukoushikku](https://github.com/vishnukoushikku))
+- **Kumara Vishnu Koushik** ([vishnukoushikkumara](https://github.com/vishnukoushikkumara))
 - **Contributors:** See [GitHub contributors](https://github.com/yourusername/CodeCanvas/graphs/contributors)
 
 ---
