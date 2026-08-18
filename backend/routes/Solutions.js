@@ -3,12 +3,60 @@ const router = express.Router();
 const Solution = require("../models/Solution");
 const auth = require("../middleware/auth");
 const axios = require("axios");
-const LANGUAGE_VERSIONS = {
-  python: "3.10.0",
-  javascript: "18.15.0",
-  cpp: "10.2.0",
-  java: "15.0.2"
+const JUDGE0_LANGUAGE_IDS = {
+  cpp: 105,
+  python: 100,
+  java: 91,
+  javascript: 93,
 };
+
+function normalizeOutput(str) {
+  if (!str) return "";
+  return str
+    .replace(/[\[\],]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function parseTestCasesFromProblem(problemData) {
+  const testCases = [];
+  const expectedOutputs = [];
+
+  // Extract examples from question HTML
+  const exampleRegex = /<strong>Input:<\/strong>([\s\S]*?)<strong>Output:<\/strong>([\s\S]*?)(?:<strong>Explanation:<\/strong>|<strong>Example|\n<p>&nbsp;<\/p>|<\/pre>|$)/gi;
+  let match;
+  const htmlExamples = [];
+  while ((match = exampleRegex.exec(problemData.question || "")) !== null) {
+    const rawInput = match[1].replace(/<[^>]+>/g, '').trim();
+    const rawOutput = match[2].replace(/<[^>]+>/g, '').trim();
+    htmlExamples.push({ input: rawInput, output: rawOutput });
+  }
+
+  // Parse exampleTestcases lines
+  const rawLines = (problemData.exampleTestcases || "")
+    .trim()
+    .split('\n')
+    .filter(l => l.trim() !== '');
+
+  if (htmlExamples.length > 0) {
+    const numExamples = htmlExamples.length;
+    const linesPerCase = Math.max(1, Math.floor(rawLines.length / numExamples));
+
+    for (let i = 0; i < numExamples; i++) {
+      const caseLines = rawLines.slice(i * linesPerCase, (i + 1) * linesPerCase);
+      const stdinInput = caseLines.length > 0 ? caseLines.join('\n') : htmlExamples[i].input;
+      testCases.push(stdinInput);
+      expectedOutputs.push(htmlExamples[i].output);
+    }
+  } else if (rawLines.length > 0) {
+    testCases.push(rawLines.join('\n'));
+    expectedOutputs.push("");
+  }
+
+  return { testCases, expectedOutputs };
+}
+
 router.post("/submit", auth, async (req, res) => {
   try {
     const { problemSlug, code, language } = req.body;
@@ -16,52 +64,17 @@ router.post("/submit", auth, async (req, res) => {
     console.log("Fetching problem details from LeetCode API...");
     const leetcodeResponse = await axios.get(`https://leetcode-api-mu.vercel.app/select?titleSlug=${problemSlug}`);
     const problemData = leetcodeResponse.data;
-    console.log("LeetCode API response:", problemData);
-    const testCasesText = problemData.exampleTestcases;
-    console.log("Raw test cases:", testCasesText);
-    const testCases = [];
-    const expectedOutputs = [];
-    const lines = testCasesText.split('\n');
-    let currentInput = [];
-    let currentOutput = [];
-    let isInput = true;
-
-    for (const line of lines) {
-      if (line.trim() === '') {
-        if (currentInput.length > 0) {
-          testCases.push(currentInput.join('\n'));
-          currentInput = [];
-        }
-        if (currentOutput.length > 0) {
-          expectedOutputs.push(currentOutput.join('\n'));
-          currentOutput = [];
-        }
-        isInput = true;
-      } else if (line.includes('Output:')) {
-        isInput = false;
-      } else if (isInput) {
-        currentInput.push(line);
-      } else {
-        currentOutput.push(line);
-      }
-    }
-
-    // Add the last test case if exists
-    if (currentInput.length > 0) {
-      testCases.push(currentInput.join('\n'));
-    }
-    if (currentOutput.length > 0) {
-      expectedOutputs.push(currentOutput.join('\n'));
-    }
-
-    console.log("Parsed test cases:", testCases);
-    console.log("Expected outputs:", expectedOutputs);
+    
+    const { testCases, expectedOutputs } = parseTestCasesFromProblem(problemData);
+    console.log("Parsed test cases count:", testCases.length);
 
     const testResults = [];
     let allTestsPassed = true;
-    const judgeUrl = process.env.JUDGE_URL || "https://emkc.org/api/v2/piston/execute";
+    const judgeUrl = process.env.JUDGE_URL || "https://ce.judge0.com/submissions?base64_encoded=false&wait=true";
     console.log("Using judge URL:", judgeUrl);
     
+    const languageId = JUDGE0_LANGUAGE_IDS[language] || JUDGE0_LANGUAGE_IDS.cpp;
+
     for (let i = 0; i < testCases.length; i++) {
       const testCase = testCases[i];
       const expectedOutput = expectedOutputs[i] || '';
@@ -69,34 +82,70 @@ router.post("/submit", auth, async (req, res) => {
       try {
         console.log(`Running test case ${i + 1}:`, testCase);
         
-        const response = await axios.post(judgeUrl, {
-          language,
-          version: LANGUAGE_VERSIONS[language] || "3.10.0",
-          files: [{ content: code }],
-          stdin: testCase
-        });
+        const response = await axios.post(
+          judgeUrl,
+          {
+            source_code: code,
+            language_id: languageId,
+            stdin: testCase,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            timeout: 15000,
+          }
+        );
 
         console.log(`Judge API response for test case ${i + 1}:`, response.data);
 
-        const { run } = response.data;
-        const actualOutput = run.output?.trim() || '';
+        const { stdout, stderr, compile_output } = response.data;
         
-        console.log(`Test case ${i + 1} output:`, actualOutput);
-        console.log(`Expected output:`, expectedOutput);
-        const passed = actualOutput === expectedOutput && !run.stderr && !run.error;
-        console.log(`Test case ${i + 1} passed:`, passed);
-        
-        const testResult = {
-          input: testCase,
-          output: actualOutput,
-          expected: expectedOutput,
-          passed,
-          error: run.stderr || run.error || null
-        };
-
-        testResults.push(testResult);
-        if (!passed) {
+        if (compile_output) {
+          const errorMsg = compile_output.trim();
+          console.log(`Test case ${i + 1} compilation error:`, errorMsg);
+          testResults.push({
+            input: testCase,
+            expected: expectedOutput,
+            error: errorMsg,
+            passed: false,
+          });
           allTestsPassed = false;
+          break; // Stop running remaining cases on compilation error
+        } else if (stderr) {
+          const errorMsg = stderr.trim();
+          const actualOutput = (stdout || "").trim();
+          console.log(`Test case ${i + 1} runtime error:`, errorMsg);
+          testResults.push({
+            input: testCase,
+            output: actualOutput,
+            expected: expectedOutput,
+            passed: false,
+            error: errorMsg,
+          });
+          allTestsPassed = false;
+        } else {
+          const actualOutput = (stdout || "").trim();
+          console.log(`Test case ${i + 1} output:`, actualOutput);
+          console.log(`Expected output:`, expectedOutput);
+          
+          const normActual = normalizeOutput(actualOutput);
+          const normExpected = normalizeOutput(expectedOutput);
+          const passed = normActual === normExpected || actualOutput === expectedOutput.trim();
+          
+          console.log(`Test case ${i + 1} passed:`, passed, `("${normActual}" vs "${normExpected}")`);
+          
+          testResults.push({
+            input: testCase,
+            output: actualOutput,
+            expected: expectedOutput,
+            passed,
+            error: null,
+          });
+
+          if (!passed) {
+            allTestsPassed = false;
+          }
         }
       } catch (error) {
         console.error(`Error in test case ${i + 1}:`, error);
@@ -104,7 +153,7 @@ router.post("/submit", auth, async (req, res) => {
           input: testCase,
           expected: expectedOutput,
           error: error.message,
-          passed: false
+          passed: false,
         });
         allTestsPassed = false;
       }

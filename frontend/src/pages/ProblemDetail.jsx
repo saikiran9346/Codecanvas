@@ -14,7 +14,7 @@ const ProblemDetail = () => {
   const [input, setInput] = useState(""); 
   const [submissionResult, setSubmissionResult] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("javascript"); 
+  const [selectedLanguage, setSelectedLanguage] = useState("cpp"); 
   const backend = import.meta.env.VITE_BACKEND_URL;
   const LEETCODE_API = `https://leetcode-api-mu.vercel.app/select?titleSlug=${titleSlug}`;
 

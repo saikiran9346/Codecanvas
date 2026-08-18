@@ -25,12 +25,28 @@ export default function CodeEditor({
   onChange,
   inputValue,
   onInputChange,
+  language: propLanguage,
+  onLanguageChange,
 }) {
-  const [language, setLanguage] = useState("cpp");
+  const [language, setInternalLanguage] = useState(propLanguage || "cpp");
   const [output, setOutput] = useState("");
   const [isRunning, setIsRunning] = useState(false);
   const [currentLine, setCurrentLine] = useState(1);
   const [currentColumn, setCurrentColumn] = useState(1);
+
+  // Sync if parent updates propLanguage
+  useEffect(() => {
+    if (propLanguage && propLanguage !== language) {
+      setInternalLanguage(propLanguage);
+    }
+  }, [propLanguage]);
+
+  const handleLanguageChange = (newLang) => {
+    setInternalLanguage(newLang);
+    if (onLanguageChange) {
+      onLanguageChange(newLang);
+    }
+  };
 
   // Get judge URL from environment or use default
   const getJudgeUrl = () => {
@@ -110,7 +126,7 @@ export default function CodeEditor({
         </div>
         <div className="header-right">
           <div className="editor-actions-group">
-            <LanguageSelector language={language} setLanguage={setLanguage} />
+            <LanguageSelector language={language} setLanguage={handleLanguageChange} />
             <button
               onClick={runCode}
               className={`run-btn ${isRunning ? "running" : ""}`}
